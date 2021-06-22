@@ -1,10 +1,42 @@
-# Weather-Journal App Project
+# Travel App Project
 
-## Overview
-This project requires you to create an asynchronous web app that uses Web API and user data to dynamically update the UI. 
+## Table of Contents
+
+* [Instructions](#instructions)
+* [Contents](#contents)
+* [Get started](#get-started)
+* [Help & support](#help--support)
 
 ## Instructions
-This will require modifying the `server.js` file and the `website/app.js` file. You can see `index.html` for element references, and once you are finished with the project steps, you can use `style.css` to style your application to customized perfection.
 
-## Extras
-If you are interested in testing your code as you go, you can use `tests.js` as a template for writing and running some basic tests for your code.
+This project aims to put all of the skills I have learned into one project to build my own custom travel app. Finally, this is all going to be done in a Webpack environment, using an express server, and wrapped up with service workers
+
+For specific, detailed instructions, look at the project instructions in the Udacity Classroom.
+
+## Contents
+
+The files found it here, which contains the following:
+
+* **README.md** - This document.
+* **package.json** - Packages included to run the project
+* **package-lock.json** - Packages included to run the project - locked
+* **.gitignore** - What shouldn't be include when deploying.
+* **babelrc** - settings from babel plugin.
+* **src/client/views/index.html** - Main landing page.
+* ***src/client/styles** - Style sheet folder
+* **src/client/js** - Javascript folder.
+* **src/server/index.js** - Javascript server side code.
+
+## Get started
+
+Open the terminal and run first
+npm start
+
+Then, open another terminal tab and run
+npm run build-dev
+
+The page will open index.html
+
+## Help & support
+
+If you have any further questions, please contact [maykel.oenning@gmail.com](mailto:maykel.oenning@gmail.com).
