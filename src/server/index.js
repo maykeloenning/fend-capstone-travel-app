@@ -4,6 +4,8 @@ projectData = {};
 const dotenv = require('dotenv');
 dotenv.config();
 
+const fetch = require("node-fetch");
+
 // Require Express to run server and routes
 const express = require('express');
 
@@ -60,7 +62,6 @@ app.post("/current", async function (req, res) {
   const result = await fetch("https://api.weatherbit.io/v2.0/current?lat="+lat+"&lon="+lon+"&key="+apiKey+"&units=I")
   try {
     const response = await result.json();
-
     newEntry = {
       temp: response.data[0].temp,
       description: response.data[0].weather.description
@@ -83,7 +84,7 @@ app.post("/future", async function (req, res) {
   const result = await fetch("https://api.weatherbit.io/v2.0/forecast/daily?lat="+lat+"&lon="+lon+"&key="+apiKey+"&units=I")
   try {
     const response = await result.json();
-    // console.log(response);
+    console.log(response);
     newEntry = {
       HiTemp: response.data[0].max_temp,
       LowTemp: response.data[0].low_temp,

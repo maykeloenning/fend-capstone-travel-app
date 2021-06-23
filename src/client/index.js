@@ -7,24 +7,21 @@ import { updateFuture } from "./js/app";
 
 import './media/screen.scss'
 import './styles/style.scss'
-   
-alert("I EXIST")
-console.log("CHANGE!!");
 
-// set minimum date for current day
-let today = new Date();
-let dd = today.getDate();
-let mm = today.getMonth() + 1;
-let yyyy = today.getFullYear();
+// set calendar min selection date as current day
+let currentDay = new Date();
+let dd = currentDay.getDate();
+let mm = currentDay.getMonth() + 1;
+let yyyy = currentDay.getFullYear();
 if (dd < 10) {
     dd = "0" + dd;
 }
 if (mm < 10) {
     mm = "0" + mm;
 }
-today = yyyy + "-" + mm + "-" + dd;
-document.getElementById("depart").setAttribute("min", today);
-document.getElementById("return").setAttribute("min", today);
+currentDay = yyyy + "-" + mm + "-" + dd;
+document.getElementById("depart").setAttribute("min", currentDay);
+document.getElementById("return").setAttribute("min", currentDay);
 
 window.addEventListener('DOMContentLoaded', (e) => {
     const buttonSubmit = document.getElementById('search')

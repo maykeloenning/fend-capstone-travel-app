@@ -1,11 +1,8 @@
 import { getLocation } from "./app";
 import { dateCompare } from "./app";
-import { updateCurrent } from "./app";
-import { updateFuture } from "./app";
 
 /* Global Variables */
 // URL For geonames URL
-//var moment = require("moment");
 let baseURL = "http://api.geonames.org/searchJSON?username=maykeloenning&maxRows=10&q=";
 
 // Event listener to add function to existing HTML DOM element
