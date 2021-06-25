@@ -1,32 +1,33 @@
 // import js 
-import { performAction } from './js/performAction'
-import { getLocation } from "./js/app";
-import { dateCompare } from "./js/app";
-import { updateCurrent } from "./js/app";
-import { updateFuture } from "./js/app";
+import { performAction, performReturnAction } from './js/app'
 
 import './media/screen.scss'
 import './styles/style.scss'
 
 // set calendar min selection date as current day
 let currentDay = new Date();
-let dd = currentDay.getDate();
-let mm = currentDay.getMonth() + 1;
-let yyyy = currentDay.getFullYear();
-if (dd < 10) {
-    dd = "0" + dd;
+let day = currentDay.getDate();
+let month = currentDay.getMonth() + 1;
+let year = currentDay.getFullYear();
+if (day < 10) {
+    day = "0" + day;
 }
-if (mm < 10) {
-    mm = "0" + mm;
+if (month < 10) {
+    month = "0" + month;
 }
-currentDay = yyyy + "-" + mm + "-" + dd;
-document.getElementById("depart").setAttribute("min", currentDay);
-document.getElementById("return").setAttribute("min", currentDay);
+currentDay = year + "-" + month + "-" + day;
+document.getElementById("departDate").setAttribute("min", currentDay);
+document.getElementById("returnDate").setAttribute("min", currentDay);
 
 window.addEventListener('DOMContentLoaded', (e) => {
     const buttonSubmit = document.getElementById('search')
     buttonSubmit.addEventListener('click', performAction)
 })
 
+window.addEventListener('DOMContentLoaded', (e) => {
+    const buttonSubmit = document.getElementById('return')
+    buttonSubmit.addEventListener('click', performReturnAction)
+})
+
 // Export statements for js
-export { performAction };
+export { performAction, performReturnAction };

@@ -23,8 +23,9 @@ The files found it here, which contains the following:
 * **.gitignore** - What shouldn't be include when deploying.
 * **babelrc** - settings from babel plugin.
 * **src/client/views/index.html** - Main landing page.
-* ***src/client/styles** - Style sheet folder
-* **src/client/js** - Javascript folder.
+* ***src/client/styles/style.scss** - Main style sheet 
+* ***src/client/media/screen.scss** - Media Style sheet 
+* **src/client/js/app.js** - Main Javascript functions
 * **src/server/index.js** - Javascript server side code.
 
 ## Get started

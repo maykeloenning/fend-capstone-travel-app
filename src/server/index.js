@@ -1,5 +1,5 @@
 // Setup empty JS object to act as endpoint for all routes
-projectData = {};
+let projectData = {};
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -40,7 +40,7 @@ function listening(){
   };
 
 // Initialize all route with a callback function
-app.get('/all', sendData);
+app.get('/update', sendData);
 
 app.get('/', function (req, res) {
   res.sendFile(path.resolve('dist/index.html'))
@@ -55,18 +55,18 @@ function sendData (request, response) {
 app.post("/current", async function (req, res) {
   let data = req.body;
 
-  const apiKey = process.env.WEATHER_BIT;
-  let lat = data.latitude;
-  let lon = data.longitude;
+  const apiWeatherBit = process.env.WEATHER_BIT;
+  let latitude = data.latitude;
+  let longitude = data.longitude;
 
-  const result = await fetch("https://api.weatherbit.io/v2.0/current?lat="+lat+"&lon="+lon+"&key="+apiKey+"&units=I")
+  const result = await fetch("https://api.weatherbit.io/v2.0/current?lat="+latitude+"&lon="+longitude+"&key="+apiWeatherBit+"&units=I")
   try {
     const response = await result.json();
-    newEntry = {
+    newWeather = {
       temp: response.data[0].temp,
       description: response.data[0].weather.description
     };
-  projectData["currentWeather"] = newEntry;
+  projectData["currentWeather"] = newWeather;
   res.send(projectData);
   } catch (error) {
     console.log("error", error);
@@ -77,19 +77,19 @@ app.post("/current", async function (req, res) {
 app.post("/future", async function (req, res) {
   let data = req.body;
 
-  const apiKey = process.env.WEATHER_BIT;
-  let lat = data.latitude;
-  let lon = data.longitude;
+  const apiWeatherBit = process.env.WEATHER_BIT;
+  let latitude = data.latitude;
+  let longitude = data.longitude;
 
-  const result = await fetch("https://api.weatherbit.io/v2.0/forecast/daily?lat="+lat+"&lon="+lon+"&key="+apiKey+"&units=I")
+  const result = await fetch("https://api.weatherbit.io/v2.0/forecast/daily?lat="+latitude+"&lon="+longitude+"&key="+apiWeatherBit+"&units=I")
   try {
     const response = await result.json();
-    console.log(response);
-    newEntry = {
-      HiTemp: response.data[0].max_temp,
-      LowTemp: response.data[0].low_temp,
+    console.log(response.data[0]);
+    newWeather = {
+      maxTemp: response.data[0].max_temp,
+      lowTemp: response.data[0].low_temp,
   }
-  projectData["futureWeather"] = newEntry;
+  projectData["futureWeather"] = newWeather;
   res.send(projectData);
   } catch (error) {
     console.log("error", error);
@@ -97,33 +97,35 @@ app.post("/future", async function (req, res) {
 });
 
 // POST route to retrieve data from Pixbay
-app.post("/picture", async function (req, res) {
+app.post("/photo", async function (req, res) {
     let data = req.body;
 
-    const apiKey = process.env.PIXABAY_KEY;
+    const apiPixabay = process.env.PIXABAY_KEY;
     let city = data.city;
 
-    const result = await fetch("https://pixabay.com/api/?key="+apiKey+"&q="+city+"&category=travel")
+    const result = await fetch("https://pixabay.com/api/?key="+apiPixabay+"&q="+city+"&category=travel")
     try {
       const response = await result.json();
-      const arr = response.hits[0];
-      console.log(arr);
-      if (arr === undefined || arr.length === 0) {
-        newEntry = {
-            picture: "No picture available",
+      const hits = response.hits[0];
+      console.log(hits);
+      if (hits === undefined || hits.length === 0) {
+        newPhoto = {
+            picture: "No photo available",
         };
-        console.log("No picture available");
-        projectData["pixbay"] = newEntry;
+        console.log("No photo available");
+        projectData["pixbay"] = newPhoto;
         res.send(projectData);
       }
       else {
-        newEntry = {
+        newPhoto = {
             picture: response.hits[0].webformatURL,
         };
-        projectData["pixbay"] = newEntry;
+        projectData["pixbay"] = newPhoto;
         res.send(projectData);
       }
     } catch (error) {
     console.log("error", error);
   }
 });
+
+module.exports = server;

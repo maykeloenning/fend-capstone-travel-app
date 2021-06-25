@@ -1,6 +1,44 @@
+/* Global Variables */
+// URL For geonames URL
+let baseURL = "http://api.geonames.org/searchJSON?username=maykeloenning&maxRows=10&q=";
+
+/* Function called by event listener for button search */
+function performAction (e){
+  e.preventDefault();
+  let city = document.getElementById("city").value;
+  getDestination(baseURL, city).then(function (data) {
+      dateVerify(data);
+  });
+  hide(document.getElementById("app"));
+  show(document.getElementById("result"));
+}
+
+/* Function called by event listener for button return */
+function performReturnAction (e){
+  e.preventDefault();
+  show(document.getElementById("app"));
+  hide(document.getElementById("result"));
+}
+
+/* Hide elements in a page */
+function hide (elements) {
+  elements = elements.length ? elements : [elements];
+  for (var index = 0; index < elements.length; index++) {
+    elements[index].style.display = 'none';
+  }
+}
+
+/* Show elements in a page */
+function show (elements) {
+  elements = elements.length ? elements : [elements];
+  for (var index = 0; index < elements.length; index++) {
+    elements[index].style.display = 'grid';
+  }
+}
+
 /* Function to access Geonames API and get the coordinates of location */
-const getLocation = async (baseURL, loc) =>{
-  const res = await fetch (baseURL+loc)
+const getDestination = async (baseURL, dest) =>{
+  const res = await fetch (baseURL+dest)
   try{
     const data = await res.json();
     return data;
@@ -29,8 +67,8 @@ const postWeather = async (url = '', data = {})=>{
   }
 }
 
-// Function to POST picture data from Pixbay
-const postPicture = async (url = '', data = {})=>{
+// Function to POST image data from Pixbay
+const postPhoto = async (url = '', data = {})=>{
   console.log(data);
   const response = await fetch(url, {
     method: 'POST', 
@@ -49,42 +87,50 @@ const postPicture = async (url = '', data = {})=>{
   }
 }
 
-// Update UI for weather forecast, depending on results from dateCompare
-const update = async (isCurrent) => {
-  const request = await fetch("http://localhost:8000/updatePage");
-  let departDate = new Date(document.getElementById("depart").value);
-  let returnDate = new Date(document.getElementById("return").value);
-  if (isCurrent) {
+// Update UI for weather forecast and dest photo
+const updateUI = async (current, info, daysAwayInt) => {
+  const request = await fetch("http://localhost:8000/update");
+  let departDate = new Date(document.getElementById("departDate").value);
+  let returnDate = new Date(document.getElementById("returnDate").value);
+  let city = new Date(document.getElementById("city").value);
+  if (current) {
       try {
-          const allData = await request.json();
-          let image = document.getElementById("image");
-          if (`${allData.pixbay.picture}` === "No picture available") {
-            document.getElementById("message").innerHTML = "No picture available"
+          const data = await request.json();
+          let photo = document.getElementById("photo");
+          if (`${data.pixbay.picture}` === "No photo available") {
+            document.getElementById("text").innerHTML = "No photo available"            
+            photo.setAttribute("src", ``)
           }
           else {
-            image.setAttribute("src", `${allData.pixbay.picture}`);
-            image.setAttribute("height", "300");
-            image.setAttribute("width", "375");
+            document.getElementById("text").innerHTML = ""
+            photo.setAttribute("src", `${data.pixbay.picture}`);
+            photo.setAttribute("height", "350");
+            photo.setAttribute("width", "400");
           }
-          document.getElementById("tripDisplay").innerHTML = `Your trip from ${departDate.getMonth() + 1}/${departDate.getDate() + 1} to ${returnDate.getMonth() + 1}/${returnDate.getDate() + 1} is set!`;
-          document.getElementById("weatherInput").innerHTML = `The current weather for your destination is ${allData.currentWeather.temp}°F with ${allData.currentWeather.description.toLowerCase()}`;
+          document.getElementById("mainDescription").innerHTML = `My trip to ${info.name}, ${info.countryName} <br> Departing ${departDate.getDate()}/${departDate.getMonth() + 1} <br> Returning ${returnDate.getDate()}/${returnDate.getMonth() + 1}`;
+          document.getElementById("tripDescription").innerHTML = `${info.name} is ${daysAwayInt} days away`;
+          document.getElementById("tripWeather").innerHTML = `Typical weather for then is: <br> ${data.currentWeather.temp}°F <br> ${data.currentWeather.description} throughout the day`;
       } catch (error) {
           console.log("error", error);
       }
   } else {
       try {
-          const allData = await request.json();
-          let image = document.getElementById("image");
-          if (`${allData.pixbay.picture}` === "No picture available") {
-            document.getElementById("message").innerHTML = "No picture available"
+          const data = await request.json();
+          let photo = document.getElementById("photo");
+          if (`${data.pixbay.picture}` === "No photo available") {
+            document.getElementById("text").innerHTML = "No photo available"
+            photo.setAttribute("src", ``)
           }
           else {
-            image.setAttribute("src", `${allData.pixbay.picture}`);
-            image.setAttribute("height", "300");
-            image.setAttribute("width", "375");
+            document.getElementById("text").innerHTML = ""
+            photo.setAttribute("src", `${data.pixbay.picture}`);
+            photo.setAttribute("height", "350");
+            photo.setAttribute("width", "400");
           }
-          document.getElementById("tripDisplay").innerHTML = `Your trip from ${departDate.getMonth() + 1}/${departDate.getDate() + 1} to ${returnDate.getMonth() + 1}/${returnDate.getDate() + 1} is set!`;
-          document.getElementById("weatherInput").innerHTML = `The weather for your destination is typically between ${allData.futureWeather.HiTemp}°F and ${allData.futureWeather.LowTemp}°F`;
+          console.log(data.futureWeather);
+          document.getElementById("mainDescription").innerHTML = `My trip to ${info.name}, ${info.countryName} <br> Departing ${departDate.getDate()}/${departDate.getMonth() + 1} <br> Returning ${returnDate.getDate()}/${returnDate.getMonth() + 1}`;
+          document.getElementById("tripDescription").innerHTML = `${info.name} is ${daysAwayInt} days away`;
+          document.getElementById("tripWeather").innerHTML = `Typical weather for then is: <br> High: ${data.futureWeather.maxTemp}°F   Low: ${data.futureWeather.lowTemp}°F  <br> ${data.currentWeather.description} throughout the day`;
       } catch (error) {
           console.log("error", error);
       }
@@ -92,31 +138,38 @@ const update = async (isCurrent) => {
 };
 
  // Compare dates to get either current or future weather from Weatherbit
-const dateCompare = function (data) {
-  Date.prototype.addDays = function (days) {
+const dateVerify = function (data) {
+  Date.prototype.sumDay = function (days) {
       this.setDate(this.getDate() + parseInt(days));
       return this;
   };
 
-  let userDate = new Date(document.getElementById("depart").value);
-  let cutoffDate = new Date().addDays(7);
-  let difference = userDate.getTime() - cutoffDate.getTime();
-  let differenceByDay = difference / (1000 * 3600 * 24);
-  if (differenceByDay <= 0) {
-      console.log("input date is within 7 days of current date");
+  let currentDay = new Date().getTime()
+  let departDate = new Date(document.getElementById("departDate").value);
+  let differenceDate = new Date().sumDay(7); // cuttoff date = 7 days
+  let differenceCalc = departDate.getTime() - differenceDate.getTime();
+  let differenceDay = differenceCalc / (86400000); //differenceCalc in days, 86400000 miliseconds = day
+  let daysAway = (departDate.getTime() - currentDay)/(86400000); //to send the days away to be displayed
+  let daysAwayInt = parseInt(daysAway)
+
+  if (differenceDay <= 0) {
+      console.log("Date is soon - less than 7 days");
       postWeather("http://localhost:8000/current", { country: data.geonames[0], latitude: data.geonames[0].lat, longitude: data.geonames[0].lng }).then(() => {
-          postPicture("http://localhost:8000/picture", { city: data.geonames[0].name }).then(() => {
-              update(1);
+          postPhoto("http://localhost:8000/photo", { city: data.geonames[0].name }).then(() => {
+              let info = data.geonames[0]
+              updateUI(1, info, daysAwayInt);
           });
       });
-  } else if (differenceByDay > 0) {
-      console.log("input date is more than 7 days away from current date");
+  } else if (differenceDay > 0) {
+      console.log("Date is on future - more than 7 days away from today");
       postWeather("http://localhost:8000/future", { country: data.geonames[0], latitude: data.geonames[0].lat, longitude: data.geonames[0].lng }).then(() => {
-          postPicture("http://localhost:8000/picture", { city: data.geonames[0].name }).then(() => {
-              update(0);
+          postPhoto("http://localhost:8000/photo", { city: data.geonames[0].name }).then(() => {
+              let info = data.geonames[0]
+              updateUI(0, info, daysAwayInt);
           });
       });
   }
 };
 
-export { getLocation, postPicture, postWeather, update, dateCompare};
+// export functions to index.js
+export { performAction, performReturnAction};

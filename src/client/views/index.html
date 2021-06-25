@@ -6,33 +6,37 @@
 <link href="https://fonts.googleapis.com/css?family=Oswald:400,600,700|Ranga:400,700&display=swap" rel="stylesheet">
 </head>
  <body>
-<div id = "app">
-  <div class ="holder headline">
-    Travel App
+
+  <div class ="headline">
+    <h1>Travel Planner</h1>
   </div>
-  <div class ="holder dest">
-    <label for="dest">Enter Destination here</label>
-    <input type="text" id="dest" placeholder="enter destination here">
+
+<div id = "app">
+  <div class ="holder city">
+    <label for="city">My trip to </label>
+    <input type="text" id="city" placeholder="Enter location">
   </div>
   <div class ="holder depart">
-    <label for="depart">Departure date</label>
-    <input class= "myInput" type="date" id="depart" placeholder="enter departdate here">
+    <label for="departDate">Departing</label>
+    <input class= "input" type="date" id="departDate" placeholder="MM/DD/YYYY">
   </div>
   <div class ="holder return">
-    <label for="return">Return date</label>
-    <input class= "myInput" type="date" id="return" placeholder="enter return date here">
+    <label for="returnDate">Returning</label>
+    <input class= "input" type="date" id="returnDate" placeholder="MM/DD/YYYY">
   </div>
-
   <button id="search" type = "submit">Search</button>
+</div>
 
+<div id = "result">
   <div class="holder picture">
-    <div id="message"></div>
-    <img id="image" alt="" />
+    <div id="text"></div>
+    <img id="photo" alt="" />
   </div>
-  <div id="tripDisplay" class="holder"></div>
-  <div class="weatherHeader holder">
-  <div id="weatherInput"></div>
-  <div id="weatherDescript"></div>
+
+  <div id="mainDescription" class = "holder"></div>
+  <div id="tripDescription" class="holder"></div>
+  <div id="tripWeather" class= "holder"></div>
+  <button id="return" type = "submit">Return</button>
 </div>
 
 <script>
