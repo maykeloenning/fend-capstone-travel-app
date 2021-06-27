@@ -1,21 +1,20 @@
 @media (max-width: 500px) {
     .container{
         display:grid;
-        grid-template-rows: 200px 300px 700px;
+        grid-template-rows: 10px 300px 100px;
         /* Initially each element has its own row for small screens */
         grid-template-areas: 
         "hd"
         "sd"
         "main"
         "ft";
-        border: 2px solid gray;
     }
 }
 
 @media (min-width: 501px) and (max-width: 900px) {
     .container{
         display:grid;
-        grid-template-columns: 10px 300px 300px;
+        grid-template-columns: 0px 0px 300px;
         grid-template-rows: 100px 1550px;
         grid-template-areas: 
         "hd hd hd hd hd hd hd hd hd"
@@ -27,7 +26,7 @@
 @media (min-width: 901px) {
     .container{
         display:grid;
-        grid-template-columns: 300px 300px 300px;
+        grid-template-columns: 0px 900px;
         grid-template-rows: 100px 800px;
         grid-template-areas: 
         "hd hd hd hd hd hd hd hd hd"

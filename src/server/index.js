@@ -51,8 +51,8 @@ function sendData (request, response) {
     response.send(projectData);
   };
 
-// POST route used if departure date is within a week
-app.post("/current", async function (req, res) {
+// POST path used if departure date is within a week
+app.post("/currentForecast", async function (req, res) {
   let data = req.body;
 
   const apiWeatherBit = process.env.WEATHER_BIT;
@@ -66,17 +66,16 @@ app.post("/current", async function (req, res) {
       temp: response.data[0].temp,
       description: response.data[0].weather.description
     };
-  projectData["currentWeather"] = newWeather;
+  projectData["currentForecast"] = newWeather;
   res.send(projectData);
   } catch (error) {
-    console.log("error", error);
+    console.log("Error", error);
   }
 });
 
-// POST route used if departure date is past a week
-app.post("/future", async function (req, res) {
+// POST path used if departure date is past a week
+app.post("/futureForecast", async function (req, res) {
   let data = req.body;
-
   const apiWeatherBit = process.env.WEATHER_BIT;
   let latitude = data.latitude;
   let longitude = data.longitude;
@@ -84,15 +83,15 @@ app.post("/future", async function (req, res) {
   const result = await fetch("https://api.weatherbit.io/v2.0/forecast/daily?lat="+latitude+"&lon="+longitude+"&key="+apiWeatherBit+"&units=I")
   try {
     const response = await result.json();
-    console.log(response.data[0]);
     newWeather = {
       maxTemp: response.data[0].max_temp,
       lowTemp: response.data[0].low_temp,
+      description: response.data[0].weather.description
   }
-  projectData["futureWeather"] = newWeather;
+  projectData["futureForecast"] = newWeather;
   res.send(projectData);
   } catch (error) {
-    console.log("error", error);
+    console.log("Error", error);
   }
 });
 
@@ -107,12 +106,10 @@ app.post("/photo", async function (req, res) {
     try {
       const response = await result.json();
       const hits = response.hits[0];
-      console.log(hits);
-      if (hits === undefined || hits.length === 0) {
+      if (hits.length === 0 || hits === undefined ) {
         newPhoto = {
             picture: "No photo available",
         };
-        console.log("No photo available");
         projectData["pixbay"] = newPhoto;
         res.send(projectData);
       }
@@ -124,8 +121,8 @@ app.post("/photo", async function (req, res) {
         res.send(projectData);
       }
     } catch (error) {
-    console.log("error", error);
+        console.log("Error", error);
   }
 });
 
-module.exports = server;
+module.exports = server; 

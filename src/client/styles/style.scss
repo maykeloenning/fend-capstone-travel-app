@@ -5,6 +5,7 @@ body{
 
 #app, #result{
     /* grid-template-columns:  */
+    grid-area: main;
     height:90vh;
     grid-gap: 0em;
     background: lightpink;
@@ -12,54 +13,54 @@ body{
     justify-content: center;
     font-size: 20px;
     font-family: 'Oswald', sans-serif;
-    padding: 1%;
 }
-
 
 #app{
     display: grid;
     grid-auto-rows: minmax(150px, auto);
 }
 
-
 #result{
     display: none;
     grid-auto-rows: minmax(35px, auto);
+    grid-template-areas: 
+        "hd hd hd hd hd hd hd hd hd"
+        "sd main main main main main main main main"
+        "ft ft ft ft ft ft ft ft ft";
 }
 
-#search{
-    
-}
-
-.holder{
-
+.box{
+    padding: 1%;
 }
 
 .entry{
     background: rgba(59, 74, 107, .4);
 }
 
-#entryHolder{
-
+.header {
+    display: flex;
+    grid-area: hd;
+    justify-content: space-evenly;
+    padding: 20px;
 }
 
-#date{
-
+.picture {
+    display: flex;
+    grid-area: sd;
 }
 
-#temp{
-
+.details{
+    display:flex;
+    grid-area: main;
+    flex-direction: column;
+    padding-left: 2%;
 }
 
-#content{
-
-}
-
-.headline {
-
-}
-.title{
-
+#return{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-top: 20%;
 }
 
 /*  Basic Styling To Override Default For Basic HTML Elements */
@@ -79,6 +80,11 @@ input{
     border: none;
 }
 
+input:hover {
+    box-shadow: 0 0 11px rgba(33,33,33,.2); 
+    background-color: rgb(180, 180, 179);
+}
+
 button{
     width: 320px;
     height: 70px;
@@ -87,9 +93,14 @@ button{
     color: black;
     font-size: 26px;
     font-family: 'Oswald', sans-serif;
-    border: none;
+    border: 1px solid #444;
+    transition: box-shadow .3s;
+}
+
+button:hover{
     box-shadow: 2px 4px 5px #444;
 }
+
 h1{
     font-size: 36px;
 }

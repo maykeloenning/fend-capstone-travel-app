@@ -5,40 +5,42 @@
 <title>Travel App</title>
 <link href="https://fonts.googleapis.com/css?family=Oswald:400,600,700|Ranga:400,700&display=swap" rel="stylesheet">
 </head>
- <body>
+  <body>
 
-  <div class ="headline">
-    <h1>Travel Planner</h1>
-  </div>
+  <div class = "container">
+    <div class ="header">
+      <h1>Travel Planner</h1>
+    </div>
 
-<div id = "app">
-  <div class ="holder city">
-    <label for="city">My trip to </label>
-    <input type="text" id="city" placeholder="Enter location">
-  </div>
-  <div class ="holder depart">
-    <label for="departDate">Departing</label>
-    <input class= "input" type="date" id="departDate" placeholder="MM/DD/YYYY">
-  </div>
-  <div class ="holder return">
-    <label for="returnDate">Returning</label>
-    <input class= "input" type="date" id="returnDate" placeholder="MM/DD/YYYY">
-  </div>
-  <button id="search" type = "submit">Search</button>
-</div>
+    <div id = "app">
+      <div class ="city box">
+        <label for="city">My trip to </label>
+        <input type="text" id="city" placeholder="Enter location">
+      </div>
+      <div class ="depart box">
+        <label for="departDate">Departing</label>
+        <input class= "input" type="date" id="departDate" placeholder="MM/DD/YYYY">
+      </div>
+      <div class ="return box">
+        <label for="returnDate">Returning</label>
+        <input class= "input" type="date" id="returnDate" placeholder="MM/DD/YYYY">
+      </div>
+      <button id="search" type = "submit">Search</button>
+    </div>
 
-<div id = "result">
-  <div class="holder picture">
-    <div id="text"></div>
-    <img id="photo" alt="" />
-  </div>
-
-  <div id="mainDescription" class = "holder"></div>
-  <div id="tripDescription" class="holder"></div>
-  <div id="tripWeather" class= "holder"></div>
-  <button id="return" type = "submit">Return</button>
-</div>
-
+    <div id = "result">
+      <div class="picture box">
+        <div id="text"></div>
+        <img id="photo" alt="" />
+      </div>
+      <div class = "details">
+        <div id="mainDescription" class = "box"></div>
+        <div id="tripDescription" class="box"></div>
+        <div id="tripWeather" class= "box"></div>
+        <button id="return" type = "submit">Return</button>
+      </div>
+    </div>
+  </div>  
 <script>
   // Check that service workers are supported
   if ("serviceWorker" in navigator) {

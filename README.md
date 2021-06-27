@@ -22,7 +22,9 @@ The files found it here, which contains the following:
 * **package-lock.json** - Packages included to run the project - locked
 * **.gitignore** - What shouldn't be include when deploying.
 * **babelrc** - settings from babel plugin.
+* **__test__/testServerIndex.spec.js** - test script for server run 
 * **src/client/views/index.html** - Main landing page.
+* **src/client/index.js** - Index javascript called by landing page
 * ***src/client/styles/style.scss** - Main style sheet 
 * ***src/client/media/screen.scss** - Media Style sheet 
 * **src/client/js/app.js** - Main Javascript functions
