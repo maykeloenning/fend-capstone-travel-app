@@ -1,7 +1,7 @@
 const server = require ('../src/server/index') //to import the server/index.js to test
 
-//const supertest = require('supertest');
-//const request = supertest(server)
+const supertest = require('supertest');
+const request = supertest(server);
 
 
 describe('Testing if the server path is running', () => {
