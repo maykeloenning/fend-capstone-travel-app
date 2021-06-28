@@ -56,20 +56,23 @@ app.post("/currentForecast", async function (req, res) {
   let data = req.body;
 
   const apiWeatherBit = process.env.WEATHER_BIT;
-  let latitude = data.latitude;
-  let longitude = data.longitude;
+  let lat = data.lat; //latitude
+  let lng = data.lng; //longitude
+  let info = data.info;
 
-  const result = await fetch("https://api.weatherbit.io/v2.0/current?lat="+latitude+"&lon="+longitude+"&key="+apiWeatherBit+"&units=I")
+  const result = await fetch("https://api.weatherbit.io/v2.0/current?lat="+lat+"&lon="+lng+"&key="+apiWeatherBit+"&units=I")
   try {
-    const response = await result.json();
+    const responseData = await result.json();
     newWeather = {
-      temp: response.data[0].temp,
-      description: response.data[0].weather.description
+      temp: responseData.data[0].temp,
+      description: responseData.data[0].weather.description,
+      city: info.name,
+      countryName: info.countryName
     };
-  projectData["currentForecast"] = newWeather;
-  res.send(projectData);
+    projectData["currentForecast"] = newWeather;
+    res.send(projectData);
   } catch (error) {
-    console.log("Error", error);
+      console.log("Error", error);
   }
 });
 
@@ -77,16 +80,19 @@ app.post("/currentForecast", async function (req, res) {
 app.post("/futureForecast", async function (req, res) {
   let data = req.body;
   const apiWeatherBit = process.env.WEATHER_BIT;
-  let latitude = data.latitude;
-  let longitude = data.longitude;
+  let lat = data.lat; //latitude
+  let lng = data.lng; //longitude
+  let info = data.info;
 
-  const result = await fetch("https://api.weatherbit.io/v2.0/forecast/daily?lat="+latitude+"&lon="+longitude+"&key="+apiWeatherBit+"&units=I")
+  const result = await fetch("https://api.weatherbit.io/v2.0/forecast/daily?lat="+lat+"&lon="+lng+"&key="+apiWeatherBit+"&units=I")
   try {
-    const response = await result.json();
+    const responseData = await result.json();
     newWeather = {
-      maxTemp: response.data[0].max_temp,
-      lowTemp: response.data[0].low_temp,
-      description: response.data[0].weather.description
+      maxTemp: responseData.data[0].max_temp,
+      lowTemp: responseData.data[0].low_temp,
+      description: responseData.data[0].weather.description,
+      city: info.name,
+      countryName: info.countryName
   }
   projectData["futureForecast"] = newWeather;
   res.send(projectData);
@@ -98,24 +104,24 @@ app.post("/futureForecast", async function (req, res) {
 // POST route to retrieve data from Pixbay
 app.post("/photo", async function (req, res) {
     let data = req.body;
-
     const apiPixabay = process.env.PIXABAY_KEY;
-    let city = data.city;
+    let cityName = data.cityName;
 
-    const result = await fetch("https://pixabay.com/api/?key="+apiPixabay+"&q="+city+"&category=travel")
+    const result = await fetch("https://pixabay.com/api/?key="+apiPixabay+"&q="+cityName+"&category=travel")
     try {
-      const response = await result.json();
-      const hits = response.hits[0];
-      if (hits.length === 0 || hits === undefined ) {
+      const responseData = await result.json();
+      const hits = responseData.hits[0];
+      console.log(hits);
+      if (hits === undefined ) {
         newPhoto = {
-            picture: "No photo available",
+            picture: "No photo",
         };
         projectData["pixbay"] = newPhoto;
         res.send(projectData);
       }
-      else {
+      else if (hits.length !== 0){
         newPhoto = {
-            picture: response.hits[0].webformatURL,
+            picture: responseData.hits[0].webformatURL,
         };
         projectData["pixbay"] = newPhoto;
         res.send(projectData);

@@ -40,6 +40,8 @@ npm run build-dev
 
 The page will open index.html
 
+Used port 8081 to run the page (http://localhost:8081/)
+
 ## Help & support
 
 If you have any further questions, please contact [maykel.oenning@gmail.com](mailto:maykel.oenning@gmail.com).

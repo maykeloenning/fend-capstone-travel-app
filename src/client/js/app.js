@@ -6,8 +6,8 @@ const geonameURL = "http://api.geonames.org/searchJSON?username=maykeloenning&ma
 function performAction (e){
   e.preventDefault();
   let city = document.getElementById("city").value;
-  getDestination(geonameURL, city).then(function (data) {
-      dateVerify(data);
+  getDestination(geonameURL, city).then(function (geonameData) {
+      verifyDate(geonameData);
   });
   hide(document.getElementById("app"));
   show(document.getElementById("result"));
@@ -43,7 +43,7 @@ const getDestination = async (geonameURL, dest) =>{
     const data = await res.json();
     return data;
   } catch (error) {
-    console.log('Error returning destination');
+      console.log('Error returning destination');
   }
 }
 
@@ -88,27 +88,26 @@ const postPhoto = async (url = '', data = {})=>{
 }
 
 /* Update UI for weather forecast and dest photo */
-const updateUI = async (current, info, daysAwayInt) => {
+const updateUI = async (isRecent, daysAwayInt) => {
   const request = await fetch("http://localhost:8000/update");
   let departDate = new Date(document.getElementById("departDate").value);
   let returnDate = new Date(document.getElementById("returnDate").value);
-  if (current) {
+  if (isRecent) {
       try {
           const data = await request.json();
           let photo = document.getElementById("photo");
-          if (`${data.pixbay.picture}` === "No photo available") {
-            document.getElementById("text").innerHTML = "No photo available"            
+          if (`${data.pixbay.picture}` === "No photo") {         
             photo.setAttribute("src", ``)
+            photo.setAttribute("alt", "No Photo")
           }
           else {
-            document.getElementById("text").innerHTML = "";
             photo.setAttribute("src", `${data.pixbay.picture}`);
+            photo.setAttribute("alt", `${data.currentForecast.city}`)
             photo.setAttribute("width", "400");
             photo.setAttribute("height", "350");
           }
-          console.log(data.futureForecast)
-          document.getElementById("mainDescription").innerHTML = `My trip to ${info.name}, ${info.countryName} <br> Departing ${departDate.getDate()}/${departDate.getMonth() + 1} <br> Returning ${returnDate.getDate()}/${returnDate.getMonth() + 1}`;
-          document.getElementById("tripDescription").innerHTML = `${info.name} is ${daysAwayInt} days away`;
+          document.getElementById("mainDescription").innerHTML = `My trip to ${data.currentForecast.city}, ${data.currentForecast.countryName} <br> Departing ${departDate.getDate()}/${departDate.getMonth() + 1} <br> Returning ${returnDate.getDate()}/${returnDate.getMonth() + 1}`;
+          document.getElementById("tripDescription").innerHTML = `${data.currentForecast.city } is ${daysAwayInt} days away`;
           document.getElementById("tripWeather").innerHTML = `Typical weather for then is: <br> ${data.currentForecast.temp}°F <br> ${data.currentForecast.description} throughout the day`;
       } catch (error) {
           console.log("Error", error);
@@ -117,19 +116,18 @@ const updateUI = async (current, info, daysAwayInt) => {
       try {
           const data = await request.json();
           let photo = document.getElementById("photo");
-          if (`${data.pixbay.picture}` === "No photo available") {
-            document.getElementById("text").innerHTML = "No photo available"
+          if (`${data.pixbay.picture}` === "No photo") {
             photo.setAttribute("src", ``)
+            photo.setAttribute("alt", "No Photo")
           }
           else {
-            document.getElementById("text").innerHTML = "";
             photo.setAttribute("src", `${data.pixbay.picture}`);
+            photo.setAttribute("alt", `${data.currentForecast.city}`)
             photo.setAttribute("width", "400");
             photo.setAttribute("height", "350");
           }
-          console.log(data.futureForecast);
-          document.getElementById("mainDescription").innerHTML = `My trip to ${info.name}, ${info.countryName} <br> Departing ${departDate.getDate()}/${departDate.getMonth() + 1} <br> Returning ${returnDate.getDate()}/${returnDate.getMonth() + 1}`;
-          document.getElementById("tripDescription").innerHTML = `${info.name} is ${daysAwayInt} days away`;
+          document.getElementById("mainDescription").innerHTML = `My trip to ${data.futureForecast.city}, ${data.futureForecast.countryName} <br> Departing ${departDate.getDate()}/${departDate.getMonth() + 1} <br> Returning ${returnDate.getDate()}/${returnDate.getMonth() + 1}`;
+          document.getElementById("tripDescription").innerHTML = `${data.futureForecast.city} is ${daysAwayInt} days away`;
           document.getElementById("tripWeather").innerHTML = `Typical weather for then is: <br> High: ${data.futureForecast.maxTemp}°F   Low: ${data.futureForecast.lowTemp}°F  <br> ${data.futureForecast.description} throughout the day`;
       } catch (error) {
           console.log("Error", error);
@@ -137,11 +135,12 @@ const updateUI = async (current, info, daysAwayInt) => {
   }
 };
 
- /* Compare dates to get current or future weather from Weatherbit */
-const dateVerify = function (data) {
+ /* Compare dates to get recent or future weather from Weatherbit */
+const verifyDate = function (geonameData) {
   Date.prototype.sumDay = function (days) {
-      this.setDate(this.getDate() + parseInt(days));
-      return this;
+      let date = new Date(this.valueOf());
+      date.setDate(date.getDate() + parseInt(days));
+      return date;
   };
 
   let currentDay = new Date().getTime()
@@ -153,21 +152,20 @@ const dateVerify = function (data) {
   let differenceDay = differenceCalc / (86400000); //differenceCalc in days, 86400000 miliseconds = day
   let daysAway = (departDate.getTime() - currentDay)/(86400000); //to send the days away to be displayed
   let daysAwayInt = parseInt(daysAway)
+
   //if date is in less than 7 days
   if (differenceDay <= 0) {
-      postWeather("http://localhost:8000/currentForecast", { country: data.geonames[0], latitude: data.geonames[0].lat, longitude: data.geonames[0].lng }).then(() => {
-          postPhoto("http://localhost:8000/photo", { city: data.geonames[0].name }).then(() => {
-              let info = data.geonames[0] //geoname data to pass to the function updateUI
-              updateUI(1, info, daysAwayInt);
-          });
+    postPhoto("http://localhost:8000/photo", { cityName: geonameData.geonames[0].name }).then(() => {
+      postWeather("http://localhost:8000/currentForecast", { info: geonameData.geonames[0], lat: geonameData.geonames[0].lat, lng: geonameData.geonames[0].lng }).then(() => {
+        updateUI(1, daysAwayInt); //recent
       });
+    });
   } else if (differenceDay > 0) {
-      postWeather("http://localhost:8000/futureForecast", { country: data.geonames[0], latitude: data.geonames[0].lat, longitude: data.geonames[0].lng }).then(() => {
-          postPhoto("http://localhost:8000/photo", { city: data.geonames[0].name }).then(() => {
-              let info = data.geonames[0] //geoname data to pass to the function updateUI
-              updateUI(0, info, daysAwayInt);
-          });
-      });
+      postPhoto("http://localhost:8000/photo", { cityName: geonameData.geonames[0].name }).then(() => {
+        postWeather("http://localhost:8000/futureForecast", { info: geonameData.geonames[0], lat: geonameData.geonames[0].lat, lng: geonameData.geonames[0].lng }).then(() => {
+          updateUI(0, daysAwayInt); //future
+        });
+      }); 
   }
 };
 
