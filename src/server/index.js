@@ -46,7 +46,7 @@ app.get('/', function (req, res) {
   res.sendFile(path.resolve('dist/index.html'))
 })
 
-// Callback function to complete GET '/all'
+// Callback function to complete GET '/'
 function sendData (request, response) {
     response.send(projectData);
   };
@@ -131,4 +131,4 @@ app.post("/photo", async function (req, res) {
   }
 });
 
-module.exports = server; 
+module.exports = app; 
