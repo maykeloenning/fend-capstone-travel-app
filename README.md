@@ -23,6 +23,7 @@ The files found it here, which contains the following:
 * **.gitignore** - What shouldn't be include when deploying.
 * **babelrc** - settings from babel plugin.
 * **__test__/testServerIndex.spec.js** - test script for server run 
+* **__test__/testClientPerformAction.spec.js** - test script for client run 
 * **src/client/views/index.html** - Main landing page.
 * **src/client/index.js** - Index javascript called by landing page
 * ***src/client/styles/style.scss** - Main style sheet 

@@ -37,4 +37,4 @@ window.addEventListener('DOMContentLoaded', (e) => {
 })
 
 // Export statements for js
-export { performAction, performReturnAction };
+export { performAction, performReturnAction};

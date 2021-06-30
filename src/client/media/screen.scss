@@ -1,7 +1,7 @@
 @media (max-width: 500px) {
     .container{
         display:grid;
-        grid-template-rows: 10px 300px 100px;
+        grid-template-rows: 10px 100px 100px;
         /* Initially each element has its own row for small screens */
         grid-template-areas: 
         "hd"
@@ -15,7 +15,7 @@
     .container{
         display:grid;
         grid-template-columns: 0px 0px 300px;
-        grid-template-rows: 100px 1550px;
+        grid-template-rows: 900px 1550px;
         grid-template-areas: 
         "hd hd hd hd hd hd hd hd hd"
         "sd sd main main main main main main main"
@@ -33,4 +33,9 @@
         "sd main main main main main main main main"
         "ft ft ft ft ft ft ft ft ft";
     }
+    #app, #result{
+        grid-template-rows: 130px 130px 130px 130px;
+    }
+
+
 }
